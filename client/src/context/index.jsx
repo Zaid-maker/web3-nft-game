@@ -8,6 +8,8 @@ import React, {
 import { ethers } from "ethers";
 import Web3Modal from "web3modal";
 
+import { ABI, ADDRESS } from "../contract";
+
 const GlobalContext = createContext();
 
 export const GlobalContextProvider = ({ children }) => {
@@ -30,6 +32,9 @@ export const GlobalContextProvider = ({ children }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [updateGameData, setUpdateGameData] = useState(0);
 
+  const player1Ref = useRef();
+  const player2Ref = useRef();
+
   const updateCurrentWalletAddress = async () => {
     const accounts = await window?.ethereum?.request({
       method: "eth_requestAccounts",
@@ -49,15 +54,38 @@ export const GlobalContextProvider = ({ children }) => {
       const web3Modal = new Web3Modal();
       const connection = await web3Modal.connect();
       const newProvider = new ethers.providers.Web3Provider(connection);
-      const signer = new newProvider.getSigner();
+      const signer = newProvider.getSigner();
+      const newContract = new ethers.Contract(ADDRESS, ABI, signer);
 
       setProvider(newProvider);
+      setContract(newContract);
     };
 
     setSmartContractAndProvider();
   }, []);
 
-  return <GlobalContext.Provider value={{}}>{children}</GlobalContext.Provider>;
+  return (
+    <GlobalContext.Provider
+      value={{
+        player1Ref,
+        player2Ref,
+        battleGround,
+        setBattleGround,
+        contract,
+        gameData,
+        walletAddress,
+        updateCurrentWalletAddress,
+        showAlert,
+        setShowAlert,
+        battleName,
+        setBattleName,
+        errorMessage,
+        setErrorMessage,
+      }}
+    >
+      {children}
+    </GlobalContext.Provider>
+  );
 };
 
 export const useGlobalContext = () => useContext(GlobalContext);
