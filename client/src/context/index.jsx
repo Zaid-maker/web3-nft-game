@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { ethers } from "ethers";
 import Web3Modal from "web3modal";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 import { ABI, ADDRESS } from "../contract";
 
@@ -41,14 +41,14 @@ export const GlobalContextProvider = ({ children }) => {
   /* Checking if there is a battleground in local storage. If there is, it sets the battleground to
   that value. If there isn't, it sets the battleground to the default value. */
   useEffect(() => {
-    const isBattleGround = localStorage.getItem('battleground')
+    const isBattleGround = localStorage.getItem("battleground");
 
     if (isBattleGround) {
-      setBattleGround(isBattleGround)
+      setBattleGround(isBattleGround);
     } else {
-      localStorage.setItem('battleground', battleGround);
+      localStorage.setItem("battleground", battleGround);
     }
-  }, [])
+  }, []);
 
   /**
    * It updates the current wallet address.
@@ -83,6 +83,34 @@ export const GlobalContextProvider = ({ children }) => {
 
     setSmartContractAndProvider();
   }, []);
+
+  useEffect(() => {
+    if (showAlert?.status) {
+      const timer = setTimeout(() => {
+        setShowAlert({ status: false, type: "info", message: "" });
+      }, [5000]);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showAlert]);
+
+  /* Checking if there is an error message. If there is, it is parsing the error message and setting
+  the alert message to the parsed error message. */
+  useEffect(() => {
+    if (errorMessage) {
+      const parsedErrorMessage = errorMessage?.reason
+        ?.slice("execution reverted: ".length)
+        .slice(0, -1);
+
+      if (parsedErrorMessage) {
+        setShowAlert({
+          status: true,
+          type: "failure",
+          message: parsedErrorMessage,
+        });
+      }
+    }
+  }, [errorMessage]);
 
   return (
     <GlobalContext.Provider
