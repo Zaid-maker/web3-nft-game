@@ -6,10 +6,10 @@ const CustomButton = ({ title, handleClick, restStyles }) => {
   <button
     type="button"
     className={`${styles.btn} ${restStyles}`}
-    //onClick={handleClick}
+    onClick={handleClick}
   >
     {title}
-  </button>
+  </button>;
 };
 
 export default CustomButton;

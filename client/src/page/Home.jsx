@@ -5,9 +5,10 @@ import { PageHOC, CustomInput, CustomButton } from "../components";
 import { useGlobalContext } from "../context";
 
 const Home = () => {
-  const { contract, walletAddress, gameData, setShowAlert, setErrorMessage } = useGlobalContext();
-  const [playerName, setPlayerName] = useState('');
-  const navigate = useNavigate()
+  const { contract, walletAddress, gameData, setShowAlert, setErrorMessage } =
+    useGlobalContext();
+  const [playerName, setPlayerName] = useState("");
+  const navigate = useNavigate();
 
   /**
    * When the user clicks the button, we check if the player exists in the contract. If the player
@@ -15,28 +16,46 @@ const Home = () => {
    */
   const handleClick = async () => {
     try {
-      const playerExists = await contract.isPlayer(walletAddress)
-
-      setShowAlert({
-        status: true,
-        type: 'info',
-        message: `${playerName} is being summoned!`,
-      });
+      const playerExists = await contract.isPlayer(walletAddress);
 
       if (!playerExists) {
-        await contract.registerPlayer(playerName, playerName, { gasLimit: 500000 })
-        setTimeout(() => navigate('/create-battle'), 8000)
+        await contract.registerPlayer(playerName, playerName, {
+          gasLimit: 500000,
+        });
+
+        setShowAlert({
+          status: true,
+          type: "info",
+          message: `${playerName} is being summoned!`,
+        });
+
+        setTimeout(() => navigate("/create-battle"), 8000);
       }
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      setErrorMessage(error);
     }
-  }
+  };
 
+  /* Checking if the player exists and if the player token exists. If both exist, it navigates to the
+  create battle page. */
   useEffect(() => {
-    const createPlayerToken = async () => {}
+    const createPlayerToken = async () => {
+      const playerExists = await contract.isPlayer(walletAddress);
+      const playerTokenExists = await contract.isPlayerToken(walletAddress);
 
-    if (contract) createPlayerToken()
-  }, [gameData])
+      if (playerExists && playerTokenExists) navigate("/create-battle");
+    };
+
+    if (contract) createPlayerToken();
+  }, [contract]);
+
+  /* This is checking if the player has an active battle. If the player has an active battle, it
+  navigates to the battle page. */
+  useEffect(() => {
+    if (gameData.activeBattle) {
+      navigate(`/battle/${gameData.activeBattle.name}`);
+    }
+  }, [gameData]);
 
   return (
     walletAddress && (
@@ -45,6 +64,7 @@ const Home = () => {
           label="Name"
           placeHolder="Enter your player name"
           value={playerName}
+          handleValueChange={setPlayerName}
         />
 
         <CustomButton
@@ -52,7 +72,7 @@ const Home = () => {
           handleClick={handleClick}
           restStyles="mt-6"
         />
-      </div>  
+      </div>
     )
   );
 };
