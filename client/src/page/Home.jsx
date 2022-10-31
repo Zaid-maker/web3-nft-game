@@ -51,11 +51,11 @@ const Home = () => {
 
   /* This is checking if the player has an active battle. If the player has an active battle, it
   navigates to the battle page. */
-  useEffect(() => {
-    if (gameData.activeBattle) {
-      navigate(`/battle/${gameData.activeBattle.name}`);
-    }
-  }, [gameData]);
+  //useEffect(() => {
+  //  if (gameData.activeBattle) {
+  //    navigate(`/battle/${gameData.activeBattle.name}`);
+  //  }
+  //}, [gameData]);
 
   return (
     walletAddress && (

@@ -10,6 +10,7 @@ import Web3Modal from "web3modal";
 import { useNavigate } from "react-router-dom";
 
 import { ABI, ADDRESS } from "../contract";
+import { createEventListeners } from "./createEventListeners";
 
 const GlobalContext = createContext();
 
@@ -84,6 +85,52 @@ export const GlobalContextProvider = ({ children }) => {
     setSmartContractAndProvider();
   }, []);
 
+  useEffect(() => {
+    if (step === -1 && contract) {
+      createEventListeners({
+        navigate,
+        contract,
+        provider,
+        walletAddress,
+        setShowAlert,
+        player1Ref,
+        player2Ref,
+        setUpdateGameData,
+      });
+    }
+  }, [step]);
+
+  /* Fetching the game data from the smart contract. */
+  useEffect(() => {
+    const fetchGameData = async () => {
+      if (contract) {
+        const fetchedBattles = await contract.getAllBattles();
+        const pendingBattles = fetchedBattles.filter(
+          (battle) => battle.battleStatus === 0
+        );
+        let activeBattle = null;
+
+        fetchedBattles.forEach((battle) => {
+          if (
+            battle.players.find(
+              (player) => player.toLowerCase() === walletAddress.toLowerCase()
+            )
+          ) {
+            if (battle.winner.startsWith("0x00")) {
+              activeBattle = battle;
+            }
+          }
+        });
+
+        setGameData({ pendingBattles: pendingBattles.slice(1), activeBattle });
+      }
+    };
+
+    fetchGameData();
+  }, [contract, updateGameData]);
+
+  /* Checking if there is an alert message. If there is, it is setting a timer to 5 seconds.
+  If the timer is reached, it is setting the alert message to false. */
   useEffect(() => {
     if (showAlert?.status) {
       const timer = setTimeout(() => {
