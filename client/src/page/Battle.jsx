@@ -31,6 +31,16 @@ const Battle = () => {
   const { battleName } = useParams();
   const navigate = useNavigate();
 
+  /* This is a useEffect hook that is checking if the gameData.activeBattle is true. If it is not true,
+  it will navigate to the home page. */
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!gameData?.activeBattle) navigate("/");
+    }, [2000]);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div
       className={`${styles.flexBetween} ${styles.gameContainer} ${battleGround}`}
