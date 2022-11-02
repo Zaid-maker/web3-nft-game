@@ -2,5 +2,6 @@ import PageHOC from "./PageHOC";
 import CustomButton from "./CustomButton";
 import CustomInput from "./CustomInput";
 import Alert from "./Alert";
+import GameLoad from "./GameLoad";
 
-export { PageHOC, CustomButton, CustomInput, Alert };
+export { PageHOC, CustomButton, CustomInput, Alert, GameLoad };
