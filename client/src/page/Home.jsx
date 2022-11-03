@@ -36,6 +36,25 @@ const Home = () => {
     }
   };
 
+  useEffect(() => {
+    const createPlayerToken = async () => {
+      const playerExists = await contract.isPlayer(walletAddress);
+      const playerTokenExists = await contract.isPlayerToken(walletAddress);
+
+      if (playerExists && playerTokenExists) navigate("/create-battle");
+    };
+
+    if (contract) createPlayerToken();
+  }, [contract]);
+
+  /* This is a React hook that is called when the gameData changes. If the gameData has an
+  activeBattle, it will navigate to the battle page. */
+  useEffect(() => {
+    if (gameData.activeBattle) {
+      navigate(`/battle/${gameData.activeBattle.name}`);
+    }
+  }, [gameData]);
+
   return (
     walletAddress && (
       <div className="flex flex-col">
