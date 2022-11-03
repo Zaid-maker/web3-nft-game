@@ -36,27 +36,6 @@ const Home = () => {
     }
   };
 
-  /* Checking if the player exists and if the player token exists. If both exist, it navigates to the
-  create battle page. */
-  useEffect(() => {
-    const createPlayerToken = async () => {
-      const playerExists = await contract.isPlayer(walletAddress);
-      const playerTokenExists = await contract.isPlayerToken(walletAddress);
-
-      if (playerExists && playerTokenExists) navigate("/create-battle");
-    };
-
-    if (contract) createPlayerToken();
-  }, [contract]);
-
-  /* This is checking if the player has an active battle. If the player has an active battle, it
-  navigates to the battle page. */
-  useEffect(() => {
-    if (gameData.activeBattle) {
-      navigate(`/battle/${gameData.activeBattle.name}`);
-    }
-  }, [gameData]);
-
   return (
     walletAddress && (
       <div className="flex flex-col">
