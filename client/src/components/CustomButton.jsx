@@ -2,14 +2,14 @@ import React from "react";
 
 import styles from "../styles";
 
-const CustomButton = ({ title, handleClick, restStyles }) => {
+const CustomButton = ({ title, handleClick, restStyles }) => (
   <button
     type="button"
     className={`${styles.btn} ${restStyles}`}
     onClick={handleClick}
   >
     {title}
-  </button>;
-};
+  </button>
+);
 
 export default CustomButton;
