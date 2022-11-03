@@ -8,8 +8,18 @@ import { useGlobalContext } from "../context";
 const CreateBattle = () => {
   const { contract, gameData, battleName, setBattleName, setErrorMessage } =
     useGlobalContext();
-  const [winBattle, setWinBattle] = useState();
+  const [waitBattle, setWaitBattle] = useState(false);
   const navigate = useNavigate();
+
+  /* Checking if the battle is active or not. If it is active, it navigates to the battle page. If it
+  is not active, it sets the waitBattle state to true. */
+  useEffect(() => {
+    if (gameData?.activeBattle?.battleStatus === 1) {
+      navigate(`/battle/${gameData.activeBattle.name}`);
+    } else if (gameData?.activeBattle?.battleStatus === 0) {
+      setWaitBattle(true);
+    }
+  }, [gameData]);
 
   /**
    * When the user clicks the button, the function checks if the battle name is empty. If it is, it
@@ -32,13 +42,14 @@ const CreateBattle = () => {
 
   return (
     <>
-      {winBattle && <GameLoad />}
+      {waitBattle && <GameLoad />}
 
       <div className="flex flex-col mb-5">
         <CustomInput
           label="Battle"
           placeHolder="Enter battle name"
           value={battleName}
+          handleValueChange={setBattleName}
         />
 
         <CustomButton
