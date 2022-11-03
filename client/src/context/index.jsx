@@ -42,13 +42,28 @@ export const GlobalContextProvider = ({ children }) => {
   /* Checking if there is a battleground in local storage. If there is, it sets the battleground to
   that value. If there isn't, it sets the battleground to the default value. */
   useEffect(() => {
-    const isBattleGround = localStorage.getItem("battleground");
+    const isBattleground = localStorage.getItem("battleground");
 
-    if (isBattleGround) {
-      setBattleGround(isBattleGround);
+    if (isBattleground) {
+      setBattleGround(isBattleground);
     } else {
       localStorage.setItem("battleground", battleGround);
     }
+  }, []);
+
+  /* Listening for changes in the chain and the accounts. If there is a change, it is resetting the
+  step. */
+  useEffect(() => {
+    const resetParams = async () => {
+      const currentStep = await GetParams();
+
+      setStep(currentStep.step);
+    };
+
+    resetParams();
+
+    window?.ethereum?.on("chainChanged", resetParams());
+    window?.ethereum?.on("accountsChanged", resetParams());
   }, []);
 
   /**
@@ -85,6 +100,8 @@ export const GlobalContextProvider = ({ children }) => {
     setSmartContractAndProvider();
   }, []);
 
+  /* Listening for changes in the step. If the step is -1 and the contract is set, it is creating event
+  listeners. */
   useEffect(() => {
     if (step === -1 && contract) {
       createEventListeners({
