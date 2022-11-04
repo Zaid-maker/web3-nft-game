@@ -65,5 +65,29 @@ export const createEventListeners = ({
   const NewBattleEventFilter = contract.filters.NewBattle();
   AddNewEvent(NewBattleEventFilter, provider, ({ args }) => {
     console.log("New battle started!", args, walletAddress);
+
+    if (
+      walletAddress.toLowerCase() === args.player1.toLowerCase() ||
+      walletAddress.toLowerCase() === args.player2.toLowerCase()
+    ) {
+      navigate(`/battle/${args.battleName}`);
+    }
+
+    setUpdateGameData((prevUpdateGameData) => prevUpdateGameData + 1);
+  });
+
+  const NewGameTokenEventFilter = contract.filters.NewGameToken();
+  AddNewEvent(NewGameTokenEventFilter, provider, ({ args }) => {
+    console.log("New game token has been created", args.owner);
+
+    if (walletAddress.toLowerCase() === args.owner.toLowerCase()) {
+      setShowAlert({
+        status: true,
+        type: "success",
+        message: "Game token has been successfully registered.",
+      });
+
+      navigate("/create-battle");
+    }
   });
 };

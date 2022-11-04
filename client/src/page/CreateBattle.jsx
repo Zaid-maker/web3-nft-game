@@ -34,7 +34,7 @@ const CreateBattle = () => {
     try {
       await contract.createBattle(battleName);
 
-      setWinBattle(true);
+      setWaitBattle(true);
     } catch (error) {
       setErrorMessage(error);
     }
