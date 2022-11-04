@@ -7,7 +7,24 @@ import { battlegrounds } from "../assets";
 import { useGlobalContext } from "../context";
 
 const Battleground = () => {
+  const navigate = useNavigate();
   const { setBattleGround, setShowAlert, showAlert } = useGlobalContext();
+
+  const handleBattleChoice = async (ground) => {
+    setBattleGround(ground.id);
+
+    localStorage.setItem("battleground", ground.id);
+
+    setShowAlert({
+      status: true,
+      type: "info",
+      message: `${ground.name} is battle ready!`,
+    });
+
+    setTimeout(() => {
+      navigate(-1);
+    }, 1000);
+  };
 
   return (
     <div className={`${styles.flexCenter} ${styles.battlegroundContainer}`}>
@@ -26,6 +43,7 @@ const Battleground = () => {
           <div
             key={ground.id}
             className={`${styles.flexCenter} ${styles.battleGroundCard}`}
+            onClick={() => handleBattleChoice(ground)}
           >
             <img
               src={ground.image}
