@@ -5,7 +5,7 @@
     "hardhat": "^2.12.4"
   },
   "dependencies": {
-    "@nomiclabs/hardhat-ethers": "^2.2.1",
+    "@nomiclabs/hardhat-ethers": "^2.2.2",
     "@openzeppelin/contracts": "^4.7.3",
     "dotenv": "^16.0.3"
   }
